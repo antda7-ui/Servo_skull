@@ -1,0 +1,33 @@
+from pathlib import Path
+
+from servo_skull.config import AppConfig, WhisperConfig
+
+
+def test_whisper_config_defaults_to_verified_local_installation():
+    config = WhisperConfig()
+
+    assert config.executable == Path.home() / "whisper.cpp/build/bin/whisper-cli"
+    assert config.model == Path.home() / "whisper.cpp/models/ggml-base.en.bin"
+    assert config.threads == 4
+
+
+def test_whisper_config_reads_environment(monkeypatch):
+    monkeypatch.setenv("SERVO_SKULL_WHISPER_EXECUTABLE", "/opt/whisper-cli")
+    monkeypatch.setenv("SERVO_SKULL_WHISPER_MODEL", "/models/custom.bin")
+    monkeypatch.setenv("SERVO_SKULL_WHISPER_THREADS", "2")
+    monkeypatch.setenv("SERVO_SKULL_WHISPER_TIMEOUT", "45.5")
+    monkeypatch.setenv("SERVO_SKULL_AUDIO_DEVICE", "hw:USB,0")
+    monkeypatch.setenv("SERVO_SKULL_AUDIO_SAMPLE_RATE", "8000")
+    monkeypatch.setenv("SERVO_SKULL_AUDIO_CHANNELS", "2")
+    monkeypatch.setenv("SERVO_SKULL_MAX_RECORDING_SECONDS", "15.0")
+
+    config = AppConfig.from_environment()
+
+    assert config.whisper.executable == Path("/opt/whisper-cli")
+    assert config.whisper.model == Path("/models/custom.bin")
+    assert config.whisper.threads == 2
+    assert config.whisper.timeout_seconds == 45.5
+    assert config.audio.device == "hw:USB,0"
+    assert config.audio.sample_rate == 8000
+    assert config.audio.channels == 2
+    assert config.audio.max_recording_seconds == 15.0

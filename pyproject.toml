@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servo-skull"
+version = "0.1.0"
+description = "Local CPU-only voice loop for a servo skull machine spirit"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+servo-skull-audio-check = "servo_skull.audio_diagnostic:main"
+servo-skull-record = "servo_skull.record:main"
+servo-skull = "servo_skull.run:main"
+servo-skull-integration-check = "servo_skull.integration:main"
+
+[tool.setuptools.packages.find]
+include = ["servo_skull*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
