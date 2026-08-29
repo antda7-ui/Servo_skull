@@ -1,6 +1,13 @@
 from pathlib import Path
 
-from servo_skull.config import AppConfig, WhisperConfig
+from servo_skull.config import AppConfig, OllamaConfig, WhisperConfig
+
+
+def test_ollama_config_defaults_are_faster_for_cpu_usage():
+    config = OllamaConfig()
+
+    assert config.max_history_turns == 2
+    assert config.max_response_tokens == 48
 
 
 def test_whisper_config_defaults_to_verified_local_installation():

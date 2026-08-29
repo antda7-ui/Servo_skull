@@ -51,8 +51,9 @@ class AudioConfig:
 class OllamaConfig:
     endpoint: str = "http://127.0.0.1:11434/api/chat"
     model: str = "llama3.2:3b-instruct"
-    timeout_seconds: float = 120.0
-    max_history_turns: int = 6
+    timeout_seconds: float = 90.0
+    max_history_turns: int = 2
+    max_response_tokens: int = 48
 
     @classmethod
     def from_environment(cls) -> "OllamaConfig":
@@ -64,6 +65,9 @@ class OllamaConfig:
             ),
             max_history_turns=int(
                 os.getenv("SERVO_SKULL_OLLAMA_MAX_HISTORY_TURNS", cls.max_history_turns)
+            ),
+            max_response_tokens=int(
+                os.getenv("SERVO_SKULL_OLLAMA_MAX_RESPONSE_TOKENS", cls.max_response_tokens)
             ),
         )
 

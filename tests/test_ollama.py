@@ -34,12 +34,13 @@ def make_adapter(max_history_turns=2):
             model="test-model",
             timeout_seconds=3.0,
             max_history_turns=max_history_turns,
+            max_response_tokens=96,
         )
     )
 
 
 def test_persona_prompt_contains_contract_and_no_phrase_bank():
-    assert "1 to 4 sentences" in PERSONA_SYSTEM_PROMPT
+    assert "1-4 sentences" in PERSONA_SYSTEM_PROMPT
     assert "fresh wording" in PERSONA_SYSTEM_PROMPT
     assert "stage directions" in PERSONA_SYSTEM_PROMPT
     assert "canned phrase bank" in PERSONA_SYSTEM_PROMPT
@@ -62,6 +63,7 @@ def test_chat_posts_expected_payload_and_keeps_bounded_history(monkeypatch):
     assert requests[1][1] == 3.0
     assert payload["model"] == "test-model"
     assert payload["stream"] is False
+    assert payload["options"] == {"num_predict": 96}
     assert payload["messages"][0]["role"] == "system"
     assert payload["messages"][0]["content"] == PERSONA_SYSTEM_PROMPT
     assert payload["messages"][-1] == {"role": "user", "content": "Second request"}
