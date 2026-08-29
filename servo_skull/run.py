@@ -21,14 +21,19 @@ def main() -> int:
         "--clean-voice", action="store_true", help="skip the configured SoX effects"
     )
     parser.add_argument(
+        "--fast-mode",
+        action="store_true",
+        help="reduce reply length and context for lower-latency CPU-only responses",
+    )
+    parser.add_argument(
         "--debug-directory", type=Path, default=Path("debug-artifacts")
     )
     args = parser.parse_args()
 
-    config = AppConfig.from_environment()
+    config = AppConfig.from_environment(fast_mode=args.fast_mode)
     audio = AudioAdapter(config.audio)
     loop = VoiceLoop(
-        recorder=PushToTalkRecorder(audio),
+        recorder=PushToTalkRecorder(audio, propagate_interrupt=True),
         whisper=WhisperAdapter(config.whisper),
         ollama=OllamaAdapter(config.ollama),
         piper=PiperAdapter(config.tts),

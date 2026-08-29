@@ -56,18 +56,35 @@ class OllamaConfig:
     max_response_tokens: int = 48
 
     @classmethod
-    def from_environment(cls) -> "OllamaConfig":
+    def from_environment(cls, fast_mode: bool = False) -> "OllamaConfig":
+        overrides = {
+            "timeout_seconds": cls.timeout_seconds,
+            "max_history_turns": cls.max_history_turns,
+            "max_response_tokens": cls.max_response_tokens,
+        }
+        if fast_mode:
+            overrides = {
+                "timeout_seconds": 60.0,
+                "max_history_turns": 2,
+                "max_response_tokens": 32,
+            }
         return cls(
             endpoint=os.getenv("SERVO_SKULL_OLLAMA_ENDPOINT", cls.endpoint),
             model=os.getenv("SERVO_SKULL_OLLAMA_MODEL", cls.model),
             timeout_seconds=float(
-                os.getenv("SERVO_SKULL_OLLAMA_TIMEOUT", cls.timeout_seconds)
+                os.getenv("SERVO_SKULL_OLLAMA_TIMEOUT", overrides["timeout_seconds"])
             ),
             max_history_turns=int(
-                os.getenv("SERVO_SKULL_OLLAMA_MAX_HISTORY_TURNS", cls.max_history_turns)
+                os.getenv(
+                    "SERVO_SKULL_OLLAMA_MAX_HISTORY_TURNS",
+                    overrides["max_history_turns"],
+                )
             ),
             max_response_tokens=int(
-                os.getenv("SERVO_SKULL_OLLAMA_MAX_RESPONSE_TOKENS", cls.max_response_tokens)
+                os.getenv(
+                    "SERVO_SKULL_OLLAMA_MAX_RESPONSE_TOKENS",
+                    overrides["max_response_tokens"],
+                )
             ),
         )
 
@@ -116,11 +133,11 @@ class AppConfig:
     effects: EffectsConfig = EffectsConfig()
 
     @classmethod
-    def from_environment(cls) -> "AppConfig":
+    def from_environment(cls, fast_mode: bool = False) -> "AppConfig":
         return cls(
             whisper=WhisperConfig.from_environment(),
             audio=AudioConfig.from_environment(),
-            ollama=OllamaConfig.from_environment(),
+            ollama=OllamaConfig.from_environment(fast_mode=fast_mode),
             tts=TtsConfig.from_environment(),
             effects=EffectsConfig.from_environment(),
         )

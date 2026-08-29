@@ -10,6 +10,14 @@ def test_ollama_config_defaults_are_faster_for_cpu_usage():
     assert config.max_response_tokens == 48
 
 
+def test_app_config_uses_fast_voice_profile_when_requested():
+    config = AppConfig.from_environment(fast_mode=True)
+
+    assert config.ollama.max_history_turns == 2
+    assert config.ollama.max_response_tokens == 32
+    assert config.ollama.timeout_seconds == 60.0
+
+
 def test_whisper_config_defaults_to_verified_local_installation():
     config = WhisperConfig()
 
