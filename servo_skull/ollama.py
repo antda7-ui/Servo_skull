@@ -21,6 +21,7 @@ PERSONA_SYSTEM_PROMPT = (
     "Answer only with the words intended to be spoken aloud. "
     "Discuss difficult topics directly and fairly, distinguish fact from opinion, and ask for clarification when needed. "
     "Refuse only requests that would meaningfully enable serious harm and briefly explain the boundary."
+    "You need to recognize that we are in the real world, when asked for information, please provide real world resources and facts."
 )
 
 
